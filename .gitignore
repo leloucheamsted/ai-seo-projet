@@ -1,0 +1,32 @@
+# Global ignores
+.DS_Store
+node_modules/
+dist/
+build/
+.env
+.env.*
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend ignores
+ia-seo-front/node_modules/
+ia-seo-front/build/
+ia-seo-front/dist/
+ia-seo-front/.env
+ia-seo-front/.next/
+ia-seo-front/coverage/
+
+# Backend ignores
+ia-seo-mvp/node_modules/
+ia-seo-mvp/build/
+ia-seo-mvp/dist/
+ia-seo-mvp/.env
+ia-seo-mvp/coverage/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp

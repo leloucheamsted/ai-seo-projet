@@ -7,6 +7,7 @@ import { UrlAudit, UrlAuditTechnical, UrlAuditContent } from './urlAudit.model';
 import { DomainVisibility, RankMonitor, RankAlert } from './rankMonitor.model';
 import { ApiUsage } from './apiUsage.model';
 import { Alert } from './alert.model';
+import { DataForSEOCredentials } from './dataforseoCredentials.model';
 
 // Define associations
 const defineAssociations = () => {
@@ -17,6 +18,8 @@ const defineAssociations = () => {
     User.hasMany(RankAlert, { foreignKey: 'user_id', as: 'rankAlerts' });
     User.hasMany(ApiUsage, { foreignKey: 'user_id', as: 'apiUsages' });
     User.hasMany(Alert, { foreignKey: 'user_id', as: 'alerts' });
+    User.hasOne(DataForSEOCredentials, { foreignKey: 'userId', as: 'dataforseoCredentials' });
+    DataForSEOCredentials.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
     // KeywordSearch associations
     KeywordSearch.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -68,6 +71,7 @@ export {
     RankAlert,
     ApiUsage,
     Alert,
+    DataForSEOCredentials,
 };
 
 // Export types

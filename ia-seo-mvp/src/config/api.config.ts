@@ -20,11 +20,21 @@ export interface RateLimitConfig {
 }
 
 export class ApiConfig {
-    // DataForSEO credentials
+    // DataForSEO credentials (deprecated: use getDataForSEOCredentials)
     static readonly DATAFORSEO: DataForSEOCredentials = {
         login: process.env.DATAFORSEO_LOGIN || '',
         password: process.env.DATAFORSEO_PASSWORD || '',
     };
+
+    /**
+     * Get DataForSEO credentials for a user (from DB)
+     */
+    static async getDataForSEOCredentials(userId: number): Promise<DataForSEOCredentials> {
+        const { DataForSEOCredentialsRepository } = require('../repositories/dataforseoCredentials.repository');
+        const creds = await DataForSEOCredentialsRepository.getByUserId(userId);
+        if (!creds) throw new Error('No DataForSEO credentials found for this user');
+        return { login: creds.login, password: creds.password };
+    }
 
     // Base URLs for DataForSEO APIs
     static readonly BASE_URLS = {

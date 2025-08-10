@@ -143,6 +143,11 @@ class App {
         // Authentication routes (public)
         this.app.use('/api/auth', authController);
 
+
+        // Settings routes (secured)
+        this.app.get('/api/settings/dataforseo', authMiddleware, require('./api/settings.controller').getDataForSEOCredentials);
+        this.app.post('/api/settings/dataforseo', authMiddleware, require('./api/settings.controller').setDataForSEOCredentials);
+
         // Protected routes (require authentication)
         this.app.use('/api/keyword-explorer', authMiddleware);
         // this.app.use('/api/keyword-explorer', keywordExplorerController); // À ajouter

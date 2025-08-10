@@ -49,12 +49,46 @@ export class ApiConfig {
     // API Endpoints for each service
     static readonly ENDPOINTS = {
         // Keywords Data API
-        KEYWORD_IDEAS: '/keywords_data/google_ads/keywords_for_keywords/live',
-        KEYWORD_METRICS: '/keywords_data/google_ads/ad_traffic_by_keywords/live',
+        KEYWORD_API: '/keywords_data',
+        // Google
+        KEYWORD_GOOGLEADS: '/keywords_data/google_ads',
+        KEYWORD_GOOGLE_IDEAS: '/keywords_data/google_ads/keywords_for_keywords',
+        KEYWORD_GOOGLE_METRICS: '/keywords_data/google_ads/ad_traffic_by_keywords',
+        KEYWORD_GOOGLE_FORSITE: '/keywords_data/google_ads/keywords_for_site',
+        KEYWORD_GOOGLE_SEARCH_VOLUMES: '/keywords_data/google_ads/search_volume',
+
+        // Bing
+        KEYWORD_BINGADS: '/keywords_data/bing',
+        KEYWORD_BING_IDEAS: '/keywords_data/bing/keywords_for_keywords',
+        KEYWORD_BING_METRICS: '/keywords_data/bing/ad_traffic_by_keywords',
+        KEYWORD_BING_FORSITE: '/keywords_data/bing/keywords_for_site',
+        KEYWORD_BING_SEARCH_VOLUMES: '/keywords_data/bing/search_volume',
+        KEYWORD_BING_SEARCH_VOLUME_HISTORY: '/keywords_data/bing/search_volume_history',
+        KEYWORD_BING_PERFORMANCE: '/keywords_data/bing/keyword_performance',
+        KEYWORD_BING_AUDIENCE_ESTIMATION: '/keywords_data/bing/audience_estimation',
+        KEYWORD_BING_SUGGESTIONS_FOR_URL: '/keywords_data/bing/keyword_suggestions_for_url',
+
+        // Google trends
+        KEYWORD_GOOGLE_TRENDS_EXPLORER: '/keywords_data/google_trends/explore',
+
+        // Data for Seo trends
+        KEYWORD_DATA_FOR_SEO_TRENDS: '/keywords_data/dataforseo_trends',
+
+        // clickstream data
+        KEYWORD_CLICKSTREAM: '/keywords_data/clickstream_data',
 
         // DataForSEO Labs API
-        KEYWORD_CLUSTERING: '/dataforseo_labs/google/bulk_keyword_difficulty/live',
-        KEYWORD_SUGGESTIONS: '/dataforseo_labs/google/keyword_suggestions/live',
+        DATAFORSEO_LABS: '/dataforseo_labs',
+        // Google
+        DataForSEO_KEYWORD_GOOGLE_CLUSTERING: '/dataforseo_labs/google/bulk_keyword_difficulty',
+        DataForSEO_KEYWORD_GOOGLE_SUGGESTIONS: '/dataforseo_labs/google/keyword_suggestions',
+        DataForSEO_KEYWORD_GOOGLE_PLAY: '/dataforseo_labs/google/keywords_for_app',
+
+        // Bing
+        DataForSEO_KEYWORD_BING_CLUSTERING: '/dataforseo_labs/bing/bulk_keyword_difficulty',
+
+        // App store
+        DataForSEO_KEYWORD_APP_STORE: '/dataforseo_labs/apple/keywords_for_app',
 
         // SERP API
         SERP_LIVE: '/serp/google/organic/live/advanced',

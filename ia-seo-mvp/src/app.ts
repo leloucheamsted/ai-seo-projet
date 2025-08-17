@@ -24,6 +24,26 @@ import authController from './api/auth.controller';
 dotenv.config();
 
 class App {
+    // Controller imports for documented endpoints
+    private relatedKeywords = require('./api/keywordExplorer/dataforseoLabs/relatedKeywords.controller').relatedKeywords;
+    private onPageTaskPost = require('./api/urlAnalyzer/onePage/onPage.controller').onPageTaskPost;
+    private onPageTasksReady = require('./api/urlAnalyzer/onePage/onPage.controller').onPageTasksReady;
+    private onPageTaskGet = require('./api/urlAnalyzer/onePage/onPage.controller').onPageTaskGet;
+    private domainRankOverview = require('./api/urlAnalyzer/domainAnalysis/domainAnalytics.controller').domainRankOverview;
+    private contentAnalysisSummaryLive = require('./api/urlAnalyzer/contentsAnalysis/contentAnalysis.controller').contentAnalysisSummaryLive;
+    private serpTaskPost = require('./api/rankMonitor/serp/serp.controller').serpTaskPost;
+    private serpTaskGet = require('./api/rankMonitor/serp/serp.controller').serpTaskGet;
+    private domainCompetitors = require('./api/rankMonitor/domainAnalytics/competitors.controller').domainCompetitors;
+
+    private postKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').postKeywordsForKeywords;
+    private getKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').getKeywordsForKeywords;
+    private readyKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').readyKeywordsForKeywords;
+    private liveKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').liveKeywordsForKeywords;
+
+    private keywordForSite = require('./api/keywordExplorer/keywordsData/keywordForSite.controller').keywordForSite;
+    private serpAdvanced = require('./api/keywordExplorer/serp/serpAdvanced.controller').serpAdvanced;
+    private searchVolume = require('./api/keywordExplorer/keywordsData/searchVolume.controller').searchVolume;
+
     public app: Application;
     private readonly PORT: number;
 
@@ -148,15 +168,34 @@ class App {
         this.app.get('/api/settings/dataforseo', authMiddleware, require('./api/settings.controller').getDataForSEOCredentials);
         this.app.post('/api/settings/dataforseo', authMiddleware, require('./api/settings.controller').setDataForSEOCredentials);
 
-        // Protected routes (require authentication)
-        this.app.use('/api/keyword-explorer', authMiddleware);
-        // this.app.use('/api/keyword-explorer', keywordExplorerController); // À ajouter
+        // Keyword Explorer routes
+        this.app.post('/api/keyword-explorer/related-keywords', authMiddleware, this.relatedKeywords);
+        this.app.post('/api/keyword-explorer/keywords-for-keywords', authMiddleware, this.postKeywordsForKeywords);
+        this.app.post('/api/keyword-explorer/keyword-for-site', authMiddleware, this.keywordForSite);
+        this.app.post('/api/keyword-explorer/search-volume', authMiddleware, this.searchVolume);
+        this.app.post('/api/keyword-explorer/serp-advanced', authMiddleware, this.serpAdvanced);
+        this.app.post('/api/keyword-explorer/ready-keywords-for-keywords', authMiddleware, this.readyKeywordsForKeywords);
+        this.app.post('/api/keyword-explorer/live-keywords-for-keywords', authMiddleware, this.liveKeywordsForKeywords);
+        this.app.get('/api/keyword-explorer/keywords-for-keywords', authMiddleware, this.getKeywordsForKeywords);
 
-        this.app.use('/api/url-analyzer', authMiddleware);
-        // this.app.use('/api/url-analyzer', urlAnalyzerController); // À ajouter
+        // OnPage Analyzer routes
+        this.app.post('/api/url-analyzer/onpage/task_post', authMiddleware, this.onPageTaskPost);
+        this.app.post('/api/url-analyzer/onpage/tasks_ready', authMiddleware, this.onPageTasksReady);
+        this.app.get('/api/url-analyzer/onpage/task_get/:id', authMiddleware, this.onPageTaskGet);
 
-        this.app.use('/api/rank-monitor', authMiddleware);
-        // this.app.use('/api/rank-monitor', rankMonitorController); // À ajouter
+        // Domain Analytics routes
+        this.app.post('/api/url-analyzer/domain-analytics/rank-overview', authMiddleware, this.domainRankOverview);
+
+        // Content Analysis routes
+        this.app.post('/api/url-analyzer/content-analysis/summary-live', authMiddleware, this.contentAnalysisSummaryLive);
+
+        // SERP routes
+        this.app.post('/api/rank-monitor/serp/task_post', authMiddleware, this.serpTaskPost);
+        this.app.get('/api/rank-monitor/serp/task_get/:id', authMiddleware, this.serpTaskGet);
+
+        // Competitors routes
+        this.app.post('/api/rank-monitor/domain-analytics/competitors', authMiddleware, this.domainCompetitors);
+
 
         // 404 handler
         this.app.use('*', (req: Request, res: Response) => {

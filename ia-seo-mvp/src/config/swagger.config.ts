@@ -62,6 +62,17 @@ const swaggerDefinition: SwaggerDefinition = {
                     },
                 },
             },
+            DomainRankOverviewParams: {
+                type: 'object',
+                properties: {
+                    target: {
+                        type: 'string',
+                        description: 'Domain or URL to analyze'
+                    },
+                    // Ajoute ici les autres propriétés attendues par DomainRankOverviewParams
+                },
+                required: ['target']
+            },
             AuthTokens: {
                 type: 'object',
                 properties: {

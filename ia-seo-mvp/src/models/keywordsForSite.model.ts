@@ -1,0 +1,61 @@
+import { Model, DataTypes, Optional } from 'sequelize';
+import { sequelize } from '../config/db.config';
+
+export interface KeywordsForSiteTaskAttributes {
+    id: string;
+    status_code: number;
+    status_message: string;
+    time: string;
+    cost: number;
+    result_count: number;
+    path: string[];
+    data: object;
+    result: object[];
+    params?: object;
+    created_at?: Date;
+}
+
+export interface KeywordsForSiteTaskCreationAttributes extends Optional<KeywordsForSiteTaskAttributes, 'id' | 'created_at' | 'params'> { }
+
+export class KeywordsForSiteTask extends Model<KeywordsForSiteTaskAttributes, KeywordsForSiteTaskCreationAttributes> implements KeywordsForSiteTaskAttributes {
+    public id!: string;
+    public status_code!: number;
+    public status_message!: string;
+    public time!: string;
+    public cost!: number;
+    public result_count!: number;
+    public path!: string[];
+    public data!: object;
+    public result!: object[];
+    public params?: object;
+    public created_at?: Date;
+}
+
+KeywordsForSiteTask.init({
+    id: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+    },
+    status_code: DataTypes.INTEGER,
+    status_message: DataTypes.STRING,
+    time: DataTypes.STRING,
+    cost: DataTypes.FLOAT,
+    result_count: DataTypes.INTEGER,
+    path: DataTypes.JSON,
+    data: DataTypes.JSON,
+    result: DataTypes.JSON,
+    params: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
+}, {
+    sequelize,
+    modelName: 'KeywordsForSiteTask',
+    tableName: 'keywords_for_site_tasks',
+    timestamps: false,
+});

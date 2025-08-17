@@ -51,11 +51,11 @@ export class ApiConfig {
         // Keywords Data API
         KEYWORD_API: '/keywords_data',
         // Google
-        KEYWORD_GOOGLEADS: '/keywords_data/google_ads',
-        KEYWORD_GOOGLE_IDEAS: '/keywords_data/google_ads/keywords_for_keywords',
-        KEYWORD_GOOGLE_METRICS: '/keywords_data/google_ads/ad_traffic_by_keywords',
-        KEYWORD_GOOGLE_FORSITE: '/keywords_data/google_ads/keywords_for_site',
-        KEYWORD_GOOGLE_SEARCH_VOLUMES: '/keywords_data/google_ads/search_volume',
+        KEYWORD_GOOGLEADS: '/google_ads',
+        KEYWORD_GOOGLE_IDEAS: '/google_ads/keywords_for_keywords',
+        KEYWORD_GOOGLE_METRICS: '/google_ads/ad_traffic_by_keywords',
+        KEYWORD_GOOGLE_FORSITE: '/google_ads/keywords_for_site',
+        KEYWORD_GOOGLE_SEARCH_VOLUMES: '/google_ads/search_volume',
 
         // Bing
         KEYWORD_BINGADS: '/keywords_data/bing',
@@ -80,9 +80,11 @@ export class ApiConfig {
         // DataForSEO Labs API
         DATAFORSEO_LABS: '/dataforseo_labs',
         // Google
-        DataForSEO_KEYWORD_GOOGLE_CLUSTERING: '/dataforseo_labs/google/bulk_keyword_difficulty',
-        DataForSEO_KEYWORD_GOOGLE_SUGGESTIONS: '/dataforseo_labs/google/keyword_suggestions',
-        DataForSEO_KEYWORD_GOOGLE_PLAY: '/dataforseo_labs/google/keywords_for_app',
+        DataForSEO_KEYWORD_GOOGLE_DOMAIN_RANK: '/google/domain_rank_overview',
+        DataForSEO_KEYWORD_GOOGLE_RELATE_KEYWORDS: '/google/related_keywords',
+        DataForSEO_KEYWORD_GOOGLE_SUGGESTIONS: '/google/keyword_suggestions',
+        DataForSEO_KEYWORD_GOOGLE_PLAY: '/google/keywords_for_app',
+        DataForSEO_KEYWORD_GOOGLE_COMPETITORS: '/google/competitors_domain',
 
         // Bing
         DataForSEO_KEYWORD_BING_CLUSTERING: '/dataforseo_labs/bing/bulk_keyword_difficulty',
@@ -91,21 +93,22 @@ export class ApiConfig {
         DataForSEO_KEYWORD_APP_STORE: '/dataforseo_labs/apple/keywords_for_app',
 
         // SERP API
-        SERP_LIVE: '/serp/google/organic/live/advanced',
+        SERP_GOOGLE_ORGANIC: '/google/organic',
+        SERP_LIVE: '/google/organic/live/advanced',
         SERP_FEATURES: '/serp/google/organic/live/regular',
 
         // Domain Analytics API
-        DOMAIN_OVERVIEW: '/domain_analytics/google/overview/live',
+        DOMAIN_OVERVIEW: '/domain_analytics/whois/overview/live',
         DOMAIN_PAGES: '/domain_analytics/google/pages/live',
 
         // OnPage API
-        ONPAGE_SUMMARY: '/on_page/summary',
+        ONPAGE_API: '/on_page',
         ONPAGE_PAGES: '/on_page/pages',
         ONPAGE_LIGHTHOUSE: '/on_page/lighthouse',
 
         // Content Analysis API
         CONTENT_SUMMARY: '/content_analysis/summary/live',
-        CONTENT_SENTIMENT: '/content_analysis/sentiment/live',
+        CONTENT_SENTIMENT: '/sentiment',
     };
 
     // Default quotas for different API types

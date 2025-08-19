@@ -11,13 +11,13 @@ export interface KeywordsForKeywordsTaskAttributes {
     path: string[];
     data: object;
     result: object[];
+    params: object;
     isReady: boolean;
     isSearchVolumn?: boolean;
-    params?: object;
     created_at?: Date;
 }
 
-export interface KeywordsForKeywordsTaskCreationAttributes extends Optional<KeywordsForKeywordsTaskAttributes, 'id' | 'created_at' | 'isSearchVolumn' | 'params'> { }
+export interface KeywordsForKeywordsTaskCreationAttributes extends Optional<KeywordsForKeywordsTaskAttributes, 'id' | 'created_at' | 'isSearchVolumn'> { }
 
 export class KeywordsForKeywordsTask extends Model<KeywordsForKeywordsTaskAttributes, KeywordsForKeywordsTaskCreationAttributes> implements KeywordsForKeywordsTaskAttributes {
     public id!: string;
@@ -29,9 +29,9 @@ export class KeywordsForKeywordsTask extends Model<KeywordsForKeywordsTaskAttrib
     public path!: string[];
     public data!: object;
     public result!: object[];
+    public params!: object;
     public isReady!: boolean;
     public isSearchVolumn?: boolean;
-    public params?: object;
     public created_at?: Date;
 }
 
@@ -48,6 +48,10 @@ KeywordsForKeywordsTask.init({
     path: DataTypes.JSON,
     data: DataTypes.JSON,
     result: DataTypes.JSON,
+    params: {
+        type: DataTypes.JSON,
+        allowNull: false,
+    },
     isReady: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -57,10 +61,6 @@ KeywordsForKeywordsTask.init({
         type: DataTypes.BOOLEAN,
         allowNull: true,
         defaultValue: false,
-    },
-    params: {
-        type: DataTypes.JSON,
-        allowNull: true,
     },
     created_at: {
         type: DataTypes.DATE,

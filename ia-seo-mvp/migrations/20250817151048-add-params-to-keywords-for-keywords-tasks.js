@@ -3,13 +3,20 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn('keywords_for_keywords_tasks', 'params', {
-      type: Sequelize.JSON,
-      allowNull: true,
-    });
+    /**
+     * Add altering commands here.
+     *
+     * Example:
+     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
+     */
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('keywords_for_keywords_tasks', 'params');
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
   }
 };

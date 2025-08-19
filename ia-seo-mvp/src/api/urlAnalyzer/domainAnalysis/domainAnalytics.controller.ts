@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ApiConfig } from '../../../config/api.config';
 import { DomainRankOverviewResponse } from './interfaces/DomainRankOverviewResponse';
 import { DomainRankOverviewParams } from './params/DomainRankOverviewParams';
+import { DomainRankOverviewRepository } from '../../../repositories/domainAnalytics.repository';
 
 /**
  * @swagger
@@ -39,7 +40,15 @@ export const domainRankOverview = async (req: Request, res: Response) => {
                 'Content-Type': 'application/json',
             },
         });
-        res.json(response.data as DomainRankOverviewResponse);
+
+        const responseData = response.data as DomainRankOverviewResponse;
+        if (responseData.tasks && Array.isArray(responseData.tasks)) {
+            for (const task of responseData.tasks) {
+                await DomainRankOverviewRepository.saveDomainRankOverviewTask(task, params);
+            }
+        }
+
+        res.json(responseData);
     } catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : error });
     }

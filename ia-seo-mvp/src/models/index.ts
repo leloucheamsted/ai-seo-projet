@@ -8,6 +8,7 @@ import { DomainVisibility, RankMonitor, RankAlert } from './rankMonitor.model';
 import { ApiUsage } from './apiUsage.model';
 import { Alert } from './alert.model';
 import { DataForSEOCredentials } from './dataforseoCredentials.model';
+import { TaskCost } from './taskCost.model';
 
 // Define associations
 const defineAssociations = () => {

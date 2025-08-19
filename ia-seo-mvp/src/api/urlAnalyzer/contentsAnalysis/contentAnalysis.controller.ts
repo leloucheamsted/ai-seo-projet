@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ApiConfig } from '../../../config/api.config';
 import { ContentAnalysisSummaryLiveParams } from './params/ContentAnalysisSummaryLiveParams';
 import { ContentAnalysisSummaryLiveResponse } from './interfaces/ContentAnalysisSummaryLiveResponse';
+import { ContentAnalysisSummaryRepository } from '../../../repositories/urlAudit.repository';
 
 /**
  * @swagger
@@ -41,7 +42,15 @@ export const contentAnalysisSummaryLive = async (req: Request, res: Response) =>
                 'Content-Type': 'application/json',
             },
         });
-        res.json(response.data as ContentAnalysisSummaryLiveResponse);
+
+        const responseData = response.data as ContentAnalysisSummaryLiveResponse;
+        if (responseData.tasks && Array.isArray(responseData.tasks)) {
+            for (const task of responseData.tasks) {
+                await ContentAnalysisSummaryRepository.saveContentAnalysisSummaryTask(task, params);
+            }
+        }
+
+        res.json(responseData);
     } catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : error });
     }

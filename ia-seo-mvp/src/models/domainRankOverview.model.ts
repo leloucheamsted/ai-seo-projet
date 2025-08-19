@@ -11,9 +11,12 @@ export interface DomainRankOverviewTaskAttributes {
     path: string[];
     data: object;
     result: object[];
+    params: object;
+    isReady: boolean;
+    created_at: Date;
 }
 
-export interface DomainRankOverviewTaskCreationAttributes extends Optional<DomainRankOverviewTaskAttributes, 'id'> { }
+export interface DomainRankOverviewTaskCreationAttributes extends Optional<DomainRankOverviewTaskAttributes, 'id' | 'created_at'> { }
 
 export class DomainRankOverviewTask extends Model<DomainRankOverviewTaskAttributes, DomainRankOverviewTaskCreationAttributes> implements DomainRankOverviewTaskAttributes {
     public id!: string;
@@ -25,6 +28,9 @@ export class DomainRankOverviewTask extends Model<DomainRankOverviewTaskAttribut
     public path!: string[];
     public data!: object;
     public result!: object[];
+    public params!: object;
+    public isReady!: boolean;
+    public created_at!: Date;
 }
 
 DomainRankOverviewTask.init({
@@ -40,6 +46,20 @@ DomainRankOverviewTask.init({
     path: DataTypes.JSON,
     data: DataTypes.JSON,
     result: DataTypes.JSON,
+    params: {
+        type: DataTypes.JSON,
+        allowNull: false,
+    },
+    isReady: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
     sequelize,
     modelName: 'DomainRankOverviewTask',

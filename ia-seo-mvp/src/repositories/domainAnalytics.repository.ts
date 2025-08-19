@@ -1,8 +1,8 @@
-import { ContentAnalysisSummaryTask } from '../models/contentAnalysisSummary.model';
+import { DomainRankOverviewTask } from '../models/domainRankOverview.model';
 
-export const ContentAnalysisSummaryRepository = {
-    async saveContentAnalysisSummaryTask(task: any, params?: object) {
-        return ContentAnalysisSummaryTask.create({
+export const DomainRankOverviewRepository = {
+    async saveDomainRankOverviewTask(task: any, params?: object) {
+        return DomainRankOverviewTask.create({
             id: task.id,
             status_code: task.status_code,
             status_message: task.status_message,
@@ -12,7 +12,7 @@ export const ContentAnalysisSummaryRepository = {
             path: task.path,
             data: task.data,
             result: task.result,
-            params: params,
+            params: params || {},
             isReady: true
         });
     },

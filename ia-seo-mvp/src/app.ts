@@ -152,9 +152,12 @@ class App {
                 description: 'API for SEO analysis with DataForSEO integration',
                 endpoints: {
                     auth: '/api/auth',
+                    dashboard: '/api/dashboard',
+                    taskCosts: '/api/task-costs',
                     keywordExplorer: '/api/keyword-explorer',
                     urlAnalyzer: '/api/url-analyzer',
                     rankMonitor: '/api/rank-monitor',
+                    settings: '/api/settings',
                 },
                 documentation: '/api/docs',
             });
@@ -162,6 +165,12 @@ class App {
 
         // Authentication routes (public)
         this.app.use('/api/auth', authController);
+
+        // Dashboard routes (secured)
+        this.app.use('/api/dashboard', require('./api/dashboard.routes').default);
+
+        // Task costs routes (secured)
+        this.app.use('/api/task-costs', require('./api/taskCosts.controller').default);
 
 
         // Settings routes (secured)

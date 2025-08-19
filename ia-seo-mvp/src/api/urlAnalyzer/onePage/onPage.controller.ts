@@ -5,6 +5,7 @@ import { OnPagePostParams } from './params/OnPagePostParams';
 import { OnPageTaskPostResponse } from './interfaces/OnPageTaskPostResponse';
 import { OnPageTaskGetResponse } from './interfaces/OnPageTaskGetResponse';
 import { OnPageTasksReadyResponse } from './interfaces/OnPageTasksReadyResponse';
+import { OnPageRepository } from '../../../repositories/onPage.repository';
 
 /**
  * @swagger
@@ -43,7 +44,15 @@ export const onPageTaskPost = async (req: Request, res: Response) => {
                 'Content-Type': 'application/json',
             },
         });
-        res.json(response.data as OnPageTaskPostResponse);
+
+        const responseData = response.data as OnPageTaskPostResponse;
+        if (responseData.tasks && Array.isArray(responseData.tasks)) {
+            for (const task of responseData.tasks) {
+                await OnPageRepository.saveOnPageTask(task, params);
+            }
+        }
+
+        res.json(responseData);
     } catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : error });
     }
@@ -76,7 +85,17 @@ export const onPageTasksReady = async (req: Request, res: Response) => {
                 'Content-Type': 'application/json',
             },
         });
-        res.json(response.data as OnPageTasksReadyResponse);
+
+        const responseData = response.data as OnPageTasksReadyResponse;
+        if (responseData.tasks && Array.isArray(responseData.tasks)) {
+            for (const task of responseData.tasks) {
+                if (task.id) {
+                    await OnPageRepository.updateOnPageTaskReady(task.id);
+                }
+            }
+        }
+
+        res.json(responseData);
     } catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : error });
     }
@@ -116,7 +135,17 @@ export const onPageTaskGet = async (req: Request, res: Response) => {
                 'Content-Type': 'application/json',
             },
         });
-        res.json(response.data as OnPageTaskGetResponse);
+
+        const responseData = response.data as OnPageTaskGetResponse;
+        if (responseData.tasks && Array.isArray(responseData.tasks)) {
+            for (const task of responseData.tasks) {
+                if (task.id && task.result) {
+                    await OnPageRepository.updateOnPageTaskWithResult(task.id, task.result);
+                }
+            }
+        }
+
+        res.json(responseData);
     } catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : error });
     }

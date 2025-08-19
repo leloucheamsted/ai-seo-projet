@@ -11,9 +11,12 @@ export interface DomainCompetitorsTaskAttributes {
     path: string[];
     data: object;
     result: object[];
+    params?: object;
+    isReady?: boolean;
+    created_at?: Date;
 }
 
-export interface DomainCompetitorsTaskCreationAttributes extends Optional<DomainCompetitorsTaskAttributes, 'id'> { }
+export interface DomainCompetitorsTaskCreationAttributes extends Optional<DomainCompetitorsTaskAttributes, 'id' | 'params' | 'isReady' | 'created_at'> { }
 
 export class DomainCompetitorsTask extends Model<DomainCompetitorsTaskAttributes, DomainCompetitorsTaskCreationAttributes> implements DomainCompetitorsTaskAttributes {
     public id!: string;
@@ -25,6 +28,9 @@ export class DomainCompetitorsTask extends Model<DomainCompetitorsTaskAttributes
     public path!: string[];
     public data!: object;
     public result!: object[];
+    public params?: object;
+    public isReady?: boolean;
+    public created_at?: Date;
 }
 
 DomainCompetitorsTask.init({
@@ -40,6 +46,20 @@ DomainCompetitorsTask.init({
     path: DataTypes.JSON,
     data: DataTypes.JSON,
     result: DataTypes.JSON,
+    params: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
+    isReady: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
     sequelize,
     modelName: 'DomainCompetitorsTask',

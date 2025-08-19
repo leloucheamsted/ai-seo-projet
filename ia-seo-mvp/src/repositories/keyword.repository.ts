@@ -4,7 +4,7 @@ import { KeywordsForSiteTask } from '../models/keywordsForSite.model';
 import { SerpTask } from '../models/serpTask.model';
 
 export const RelatedKeywordsRepository = {
-    async saveTask(task: any) {
+    async saveTask(task: any, params?: object) {
         return RelatedKeywordsTask.create({
             id: task.id,
             user_id: task.user_id,
@@ -15,13 +15,15 @@ export const RelatedKeywordsRepository = {
             result_count: task.result_count,
             path: task.path,
             data: task.data,
-            result: task.result
+            result: task.result,
+            params: params || {},
+            isReady: true
         });
     },
 };
 
 export const KeywordsForKeywordsRepository = {
-    async saveTaskPostKeywordForKeyword(task: any) {
+    async saveTaskPostKeywordForKeyword(task: any, params?: object) {
         return KeywordsForKeywordsTask.create({
             id: task.id,
             status_code: task.status_code,
@@ -32,10 +34,11 @@ export const KeywordsForKeywordsRepository = {
             path: task.path,
             data: task.data,
             result: task.result,
+            params: params || {},
             isReady: false
         });
     },
-    async saveTaskLiveKeywordForKeyword(task: any) {
+    async saveTaskLiveKeywordForKeyword(task: any, params?: object) {
         return KeywordsForKeywordsTask.create({
             id: task.id,
             status_code: task.status_code,
@@ -46,6 +49,7 @@ export const KeywordsForKeywordsRepository = {
             path: task.path,
             data: task.data,
             result: task.result,
+            params: params || {},
             isReady: true
         });
     },
@@ -55,7 +59,7 @@ export const KeywordsForKeywordsRepository = {
             { where: { id: taskId } }
         );
     },
-    async saveTaskSearchVolume(task: any) {
+    async saveTaskSearchVolume(task: any, params?: object) {
         return KeywordsForKeywordsTask.create({
             id: task.id,
             status_code: task.status_code,
@@ -66,6 +70,7 @@ export const KeywordsForKeywordsRepository = {
             path: task.path,
             data: task.data,
             result: task.result,
+            params: params || {},
             isReady: true,
             isSearchVolumn: true
         });
@@ -73,7 +78,7 @@ export const KeywordsForKeywordsRepository = {
 };
 
 export const KeywordsForSiteRepository = {
-    async savekeywordForSiteTask(task: any) {
+    async savekeywordForSiteTask(task: any, params?: object) {
         return KeywordsForSiteTask.create({
             id: task.id,
             status_code: task.status_code,
@@ -83,13 +88,15 @@ export const KeywordsForSiteRepository = {
             result_count: task.result_count,
             path: task.path,
             data: task.data,
-            result: task.result
+            result: task.result,
+            params: params || {},
+            isReady: true
         });
     },
 };
 
 export const SerpRepository = {
-    async saveSerpTask(task: any) {
+    async saveSerpTask(task: any, params?: object) {
         return SerpTask.create({
             id: task.id,
             status_code: task.status_code,
@@ -100,7 +107,8 @@ export const SerpRepository = {
             path: task.path,
             data: task.data,
             result: task.result,
-            isReady: true
+            isReady: true,
+            params: params || {},
         });
     },
 };

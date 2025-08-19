@@ -11,9 +11,12 @@ export interface OnPageTaskAttributes {
     path: string[];
     data: object;
     result: object[];
+    params: object;
+    isReady: boolean;
+    created_at: Date;
 }
 
-export interface OnPageTaskCreationAttributes extends Optional<OnPageTaskAttributes, 'id'> { }
+export interface OnPageTaskCreationAttributes extends Optional<OnPageTaskAttributes, 'id' | 'created_at'> { }
 
 export class OnPageTask extends Model<OnPageTaskAttributes, OnPageTaskCreationAttributes> implements OnPageTaskAttributes {
     public id!: string;
@@ -25,6 +28,9 @@ export class OnPageTask extends Model<OnPageTaskAttributes, OnPageTaskCreationAt
     public path!: string[];
     public data!: object;
     public result!: object[];
+    public params!: object;
+    public isReady!: boolean;
+    public created_at!: Date;
 }
 
 OnPageTask.init({
@@ -40,6 +46,20 @@ OnPageTask.init({
     path: DataTypes.JSON,
     data: DataTypes.JSON,
     result: DataTypes.JSON,
+    params: {
+        type: DataTypes.JSON,
+        allowNull: false,
+    },
+    isReady: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
     sequelize,
     modelName: 'OnPageTask',

@@ -14,6 +14,7 @@ export interface RelatedKeywordsTaskAttributes {
     data: object;
     result: object[];
     params?: object;
+    isReady: boolean;
     created_at?: Date;
 }
 
@@ -31,6 +32,7 @@ export class RelatedKeywordsTask extends Model<RelatedKeywordsTaskAttributes, Re
     public data!: object;
     public result!: object[];
     public params?: object;
+    public isReady!: boolean;
     public created_at?: Date;
 }
 
@@ -58,6 +60,11 @@ RelatedKeywordsTask.init({
     params: {
         type: DataTypes.JSON,
         allowNull: true,
+    },
+    isReady: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
     },
     created_at: {
         type: DataTypes.DATE,

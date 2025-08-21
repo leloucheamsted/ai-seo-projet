@@ -3,6 +3,7 @@ import { sequelize } from '../config/db.config';
 
 export interface KeywordsForKeywordsTaskAttributes {
     id: string;
+    user_id: number;
     status_code: number;
     status_message: string;
     time: string;
@@ -21,6 +22,7 @@ export interface KeywordsForKeywordsTaskCreationAttributes extends Optional<Keyw
 
 export class KeywordsForKeywordsTask extends Model<KeywordsForKeywordsTaskAttributes, KeywordsForKeywordsTaskCreationAttributes> implements KeywordsForKeywordsTaskAttributes {
     public id!: string;
+    public user_id!: number;
     public status_code!: number;
     public status_message!: string;
     public time!: string;
@@ -39,6 +41,14 @@ KeywordsForKeywordsTask.init({
     id: {
         type: DataTypes.STRING,
         primaryKey: true,
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id',
+        },
     },
     status_code: DataTypes.INTEGER,
     status_message: DataTypes.STRING,

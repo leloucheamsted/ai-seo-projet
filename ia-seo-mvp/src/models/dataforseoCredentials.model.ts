@@ -1,5 +1,5 @@
 import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from '../config/database.manager';
+import { sequelize } from '../config/db.config';
 
 export interface DataForSEOCredentialsAttributes {
     id: number;

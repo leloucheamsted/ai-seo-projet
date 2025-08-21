@@ -215,6 +215,8 @@ export const searchVolume = async (req: Request, res: Response) => {
         const responseData = response.data as KeywordsForKeywordsResponse;
         if (responseData.tasks && Array.isArray(responseData.tasks)) {
             for (const task of responseData.tasks) {
+                // Add user_id to task before saving
+                task.user_id = userId;
                 await KeywordsForKeywordsRepository.saveTaskSearchVolume(task, params);
             }
         }

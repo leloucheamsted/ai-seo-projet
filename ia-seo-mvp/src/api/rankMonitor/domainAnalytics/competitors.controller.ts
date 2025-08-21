@@ -317,6 +317,8 @@ export const domainCompetitors = async (req: Request, res: Response) => {
         const responseData = response.data as DomainCompetitorsResponse;
         if (responseData.tasks && Array.isArray(responseData.tasks)) {
             for (const task of responseData.tasks) {
+                // Add user_id to task before saving
+                (task as any).user_id = userId;
                 await DomainCompetitorsRepository.saveDomainCompetitorsTask(task, params);
             }
         }

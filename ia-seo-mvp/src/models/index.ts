@@ -73,6 +73,7 @@ export {
     ApiUsage,
     Alert,
     DataForSEOCredentials,
+    TaskCost,
 };
 
 // Export types

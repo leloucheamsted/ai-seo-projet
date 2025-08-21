@@ -22,6 +22,7 @@ export interface TaskData extends TaskDataBase {
 
 export interface Task {
     id: string;
+    user_id?: number;
     status_code: number;
     status_message: string;
     time: string;

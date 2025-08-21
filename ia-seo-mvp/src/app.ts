@@ -17,7 +17,7 @@ import { rateLimitMiddleware } from './middlewares/rateLimit.middleware';
 // Import utils
 import { logger } from './utils/logger';
 import { ApiConfig } from './config/api.config';
-import { swaggerSpec, swaggerOptions } from './config/swagger.config';
+import { swaggerSpec, swaggerOptions } from './config/swagger';
 import authController from './api/auth.controller';
 
 // Load environment variables
@@ -26,23 +26,50 @@ dotenv.config();
 class App {
     // Controller imports for documented endpoints
     private relatedKeywords = require('./api/keywordExplorer/dataforseoLabs/relatedKeywords.controller').relatedKeywords;
+    private getRelatedKeywordsGroups = require('./api/keywordExplorer/dataforseoLabs/relatedKeywords.controller').getRelatedKeywordsGroups;
+    private getRelatedKeywordsGroupById = require('./api/keywordExplorer/dataforseoLabs/relatedKeywords.controller').getRelatedKeywordsGroupById;
+    private deleteRelatedKeywordsGroup = require('./api/keywordExplorer/dataforseoLabs/relatedKeywords.controller').deleteRelatedKeywordsGroup;
     private onPageTaskPost = require('./api/urlAnalyzer/onePage/onPage.controller').onPageTaskPost;
     private onPageTasksReady = require('./api/urlAnalyzer/onePage/onPage.controller').onPageTasksReady;
     private onPageTaskGet = require('./api/urlAnalyzer/onePage/onPage.controller').onPageTaskGet;
+    private getOnPageGroups = require('./api/urlAnalyzer/onePage/onPageGroups.controller').getOnPageGroups;
+    private getOnPageGroupById = require('./api/urlAnalyzer/onePage/onPageGroups.controller').getOnPageGroupById;
+    private deleteOnPageGroup = require('./api/urlAnalyzer/onePage/onPageGroups.controller').deleteOnPageGroup;
     private domainRankOverview = require('./api/urlAnalyzer/domainAnalysis/domainAnalytics.controller').domainRankOverview;
+    private getDomainRankOverviewGroups = require('./api/urlAnalyzer/domainAnalysis/domainRankOverviewGroups.controller').getDomainRankOverviewGroups;
+    private getDomainRankOverviewGroupById = require('./api/urlAnalyzer/domainAnalysis/domainRankOverviewGroups.controller').getDomainRankOverviewGroupById;
+    private deleteDomainRankOverviewGroup = require('./api/urlAnalyzer/domainAnalysis/domainRankOverviewGroups.controller').deleteDomainRankOverviewGroup;
     private contentAnalysisSummaryLive = require('./api/urlAnalyzer/contentsAnalysis/contentAnalysis.controller').contentAnalysisSummaryLive;
+    private getContentAnalysisGroups = require('./api/urlAnalyzer/contentsAnalysis/contentAnalysisGroups.controller').getContentAnalysisGroups;
+    private getContentAnalysisGroupById = require('./api/urlAnalyzer/contentsAnalysis/contentAnalysisGroups.controller').getContentAnalysisGroupById;
+    private deleteContentAnalysisGroup = require('./api/urlAnalyzer/contentsAnalysis/contentAnalysisGroups.controller').deleteContentAnalysisGroup;
     private serpTaskPost = require('./api/rankMonitor/serp/serp.controller').serpTaskPost;
     private serpTaskGet = require('./api/rankMonitor/serp/serp.controller').serpTaskGet;
     private domainCompetitors = require('./api/rankMonitor/domainAnalytics/competitors.controller').domainCompetitors;
+    private getDomainCompetitorsGroups = require('./api/rankMonitor/domainAnalytics/competitorsGroups.controller').getDomainCompetitorsGroups;
+    private getDomainCompetitorsGroupById = require('./api/rankMonitor/domainAnalytics/competitorsGroups.controller').getDomainCompetitorsGroupById;
+    private deleteDomainCompetitorsGroup = require('./api/rankMonitor/domainAnalytics/competitorsGroups.controller').deleteDomainCompetitorsGroup;
 
     private postKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').postKeywordsForKeywords;
     private getKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').getKeywordsForKeywords;
     private readyKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').readyKeywordsForKeywords;
     private liveKeywordsForKeywords = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').liveKeywordsForKeywords;
+    private getKeywordsForKeywordsGroups = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').getKeywordsForKeywordsGroups;
+    private getKeywordsForKeywordsGroupById = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').getKeywordsForKeywordsGroupById;
+    private deleteKeywordsForKeywordsGroup = require('./api/keywordExplorer/keywordsData/keywordsForKeywords.controller').deleteKeywordsForKeywordsGroup;
 
-    private keywordForSite = require('./api/keywordExplorer/keywordsData/keywordForSite.controller').keywordForSite;
+    private keywordForSite = require('./api/keywordExplorer/keywordsData/keywordsForSite.controller').keywordsForSite;
     private serpAdvanced = require('./api/keywordExplorer/serp/serpAdvanced.controller').serpAdvanced;
+    private getSerpGroups = require('./api/keywordExplorer/serp/serpGroups.controller').getSerpGroups;
+    private getSerpGroupById = require('./api/keywordExplorer/serp/serpGroups.controller').getSerpGroupById;
+    private deleteSerpGroup = require('./api/keywordExplorer/serp/serpGroups.controller').deleteSerpGroup;
     private searchVolume = require('./api/keywordExplorer/keywordsData/searchVolume.controller').searchVolume;
+    private getSearchVolumeGroups = require('./api/keywordExplorer/keywordsData/searchVolumeGroups.controller').getSearchVolumeGroups;
+    private getSearchVolumeGroupById = require('./api/keywordExplorer/keywordsData/searchVolumeGroups.controller').getSearchVolumeGroupById;
+    private deleteSearchVolumeGroup = require('./api/keywordExplorer/keywordsData/searchVolumeGroups.controller').deleteSearchVolumeGroup;
+    private getKeywordsForSiteGroups = require('./api/keywordExplorer/keywordsData/keywordsForSiteGroups.controller').getKeywordsForSiteGroups;
+    private getKeywordsForSiteGroupById = require('./api/keywordExplorer/keywordsData/keywordsForSiteGroups.controller').getKeywordsForSiteGroupById;
+    private deleteKeywordsForSiteGroup = require('./api/keywordExplorer/keywordsData/keywordsForSiteGroups.controller').deleteKeywordsForSiteGroup;
 
     public app: Application;
     private readonly PORT: number;
@@ -170,7 +197,7 @@ class App {
         this.app.use('/api/dashboard', require('./api/dashboard.routes').default);
 
         // Task costs routes (secured)
-        this.app.use('/api/task-costs', require('./api/taskCosts.controller').default);
+        this.app.use('/api/task-costs', require('./api/taskCosts/taskCosts.routes').default);
 
 
         // Settings routes (secured)
@@ -179,24 +206,48 @@ class App {
 
         // Keyword Explorer routes
         this.app.post('/api/keyword-explorer/related-keywords', authMiddleware, this.relatedKeywords);
+        this.app.get('/api/keyword-explorer/related-keywords/groups', authMiddleware, this.getRelatedKeywordsGroups);
+        this.app.get('/api/keyword-explorer/related-keywords/groups/:groupId', authMiddleware, this.getRelatedKeywordsGroupById);
+        this.app.delete('/api/keyword-explorer/related-keywords/groups/:groupId', authMiddleware, this.deleteRelatedKeywordsGroup);
         this.app.post('/api/keyword-explorer/keywords-for-keywords', authMiddleware, this.postKeywordsForKeywords);
+        this.app.get('/api/keyword-explorer/keywords-for-keywords/groups', authMiddleware, this.getKeywordsForKeywordsGroups);
+        this.app.get('/api/keyword-explorer/keywords-for-keywords/groups/:groupId', authMiddleware, this.getKeywordsForKeywordsGroupById);
+        this.app.delete('/api/keyword-explorer/keywords-for-keywords/groups/:groupId', authMiddleware, this.deleteKeywordsForKeywordsGroup);
+        this.app.get('/api/keyword-explorer/keywords-for-keywords', authMiddleware, this.getKeywordsForKeywords);
         this.app.post('/api/keyword-explorer/keyword-for-site', authMiddleware, this.keywordForSite);
+        this.app.get('/api/keyword-explorer/keyword-for-site/groups', authMiddleware, this.getKeywordsForSiteGroups);
+        this.app.get('/api/keyword-explorer/keyword-for-site/groups/:groupId', authMiddleware, this.getKeywordsForSiteGroupById);
+        this.app.delete('/api/keyword-explorer/keyword-for-site/groups/:groupId', authMiddleware, this.deleteKeywordsForSiteGroup);
         this.app.post('/api/keyword-explorer/search-volume', authMiddleware, this.searchVolume);
+        this.app.get('/api/keyword-explorer/search-volume/groups', authMiddleware, this.getSearchVolumeGroups);
+        this.app.get('/api/keyword-explorer/search-volume/groups/:groupId', authMiddleware, this.getSearchVolumeGroupById);
+        this.app.delete('/api/keyword-explorer/search-volume/groups/:groupId', authMiddleware, this.deleteSearchVolumeGroup);
         this.app.post('/api/keyword-explorer/serp-advanced', authMiddleware, this.serpAdvanced);
+        this.app.get('/api/keyword-explorer/serp/groups', authMiddleware, this.getSerpGroups);
+        this.app.get('/api/keyword-explorer/serp/groups/:groupId', authMiddleware, this.getSerpGroupById);
+        this.app.delete('/api/keyword-explorer/serp/groups/:groupId', authMiddleware, this.deleteSerpGroup);
         this.app.post('/api/keyword-explorer/ready-keywords-for-keywords', authMiddleware, this.readyKeywordsForKeywords);
         this.app.post('/api/keyword-explorer/live-keywords-for-keywords', authMiddleware, this.liveKeywordsForKeywords);
-        this.app.get('/api/keyword-explorer/keywords-for-keywords', authMiddleware, this.getKeywordsForKeywords);
 
         // OnPage Analyzer routes
         this.app.post('/api/url-analyzer/onpage/task_post', authMiddleware, this.onPageTaskPost);
         this.app.post('/api/url-analyzer/onpage/tasks_ready', authMiddleware, this.onPageTasksReady);
         this.app.get('/api/url-analyzer/onpage/task_get/:id', authMiddleware, this.onPageTaskGet);
+        this.app.get('/api/url-analyzer/onpage/groups', authMiddleware, this.getOnPageGroups);
+        this.app.get('/api/url-analyzer/onpage/groups/:id', authMiddleware, this.getOnPageGroupById);
+        this.app.delete('/api/url-analyzer/onpage/groups/:id', authMiddleware, this.deleteOnPageGroup);
 
         // Domain Analytics routes
         this.app.post('/api/url-analyzer/domain-analytics/rank-overview', authMiddleware, this.domainRankOverview);
+        this.app.get('/api/url-analyzer/domain-analytics/rank-overview/groups', authMiddleware, this.getDomainRankOverviewGroups);
+        this.app.get('/api/url-analyzer/domain-analytics/rank-overview/groups/:groupId', authMiddleware, this.getDomainRankOverviewGroupById);
+        this.app.delete('/api/url-analyzer/domain-analytics/rank-overview/groups/:groupId', authMiddleware, this.deleteDomainRankOverviewGroup);
 
         // Content Analysis routes
         this.app.post('/api/url-analyzer/content-analysis/summary-live', authMiddleware, this.contentAnalysisSummaryLive);
+        this.app.get('/api/url-analyzer/content-analysis/groups', authMiddleware, this.getContentAnalysisGroups);
+        this.app.get('/api/url-analyzer/content-analysis/groups/:groupId', authMiddleware, this.getContentAnalysisGroupById);
+        this.app.delete('/api/url-analyzer/content-analysis/groups/:groupId', authMiddleware, this.deleteContentAnalysisGroup);
 
         // SERP routes
         this.app.post('/api/rank-monitor/serp/task_post', authMiddleware, this.serpTaskPost);
@@ -204,6 +255,9 @@ class App {
 
         // Competitors routes
         this.app.post('/api/rank-monitor/domain-analytics/competitors', authMiddleware, this.domainCompetitors);
+        this.app.get('/api/rank-monitor/domain-analytics/competitors/groups', authMiddleware, this.getDomainCompetitorsGroups);
+        this.app.get('/api/rank-monitor/domain-analytics/competitors/groups/:groupId', authMiddleware, this.getDomainCompetitorsGroupById);
+        this.app.delete('/api/rank-monitor/domain-analytics/competitors/groups/:groupId', authMiddleware, this.deleteDomainCompetitorsGroup);
 
 
         // 404 handler

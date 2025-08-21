@@ -575,3 +575,294 @@ export const liveKeywordsForKeywords = async (req: Request, res: Response) => {
     }
 };
 
+/**
+ * @swagger
+ * /api/keyword-explorer/keywords-for-keywords/groups:
+ *   get:
+ *     summary: Get keywords for keywords tasks grouped by similar requests (with pagination)
+ *     description: |
+ *       Retrieves all keywords for keywords tasks grouped by similar parameters and creation time.
+ *       Tasks belonging to the same base query (same keywords, location, language) created within 
+ *       a 5-minute window are grouped together to help organize batch requests.
+ *       
+ *       Only includes tasks where isSearchVolumn is false or null.
+ *       Supports pagination with configurable page size and navigation information.
+ *     tags:
+ *       - Keyword Explorer
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of groups per page
+ *         example: 10
+ *       - in: query
+ *         name: keywords
+ *         schema:
+ *           type: string
+ *         description: Filter groups by keywords (partial match)
+ *         example: "SEO"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved grouped tasks with pagination
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/KeywordsForKeywordsGroupsResponse'
+ *             examples:
+ *               paginated_groups:
+ *                 summary: Example paginated grouped tasks
+ *                 value:
+ *                   success: true
+ *                   groups:
+ *                     - group_id: "keyword research|SEO tools_2840_en_12345678"
+ *                       group_params:
+ *                         keywords: ["keyword research", "SEO tools"]
+ *                         location_code: 2840
+ *                         language_code: "en"
+ *                         target: null
+ *                       created_at: "2024-01-15T10:30:00.000Z"
+ *                       tasks_count: 2
+ *                       total_results: 100
+ *                       total_cost: 0.02
+ *                       tasks:
+ *                         - id: "task_1"
+ *                           status_code: 20000
+ *                           status_message: "Ok."
+ *                           time: "2024-01-15T10:30:00.000Z"
+ *                           cost: 0.01
+ *                           result_count: 50
+ *                           isReady: true
+ *                           result: []
+ *                   pagination:
+ *                     current_page: 1
+ *                     per_page: 10
+ *                     total_items: 15
+ *                     total_pages: 2
+ *                     has_next_page: true
+ *                     has_prev_page: false
+ *       400:
+ *         description: Invalid pagination parameters
+ *       401:
+ *         description: Authentication required
+ *       500:
+ *         description: Internal server error
+ */
+export const getKeywordsForKeywordsGroups = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+        // Récupérer les paramètres de pagination
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const keywordsFilter = req.query.keywords as string;
+
+        // Validation des paramètres de pagination
+        if (page < 1) {
+            return res.status(400).json({
+                success: false,
+                message: 'Page must be a positive integer'
+            });
+        }
+
+        if (limit < 1 || limit > 100) {
+            return res.status(400).json({
+                success: false,
+                message: 'Limit must be between 1 and 100'
+            });
+        }
+
+        const result = await KeywordsForKeywordsRepository.getTasksByGroups(userId, page, limit);
+
+        // Appliquer le filtre par mots-clés si fourni
+        let filteredGroups = result.groups;
+        if (keywordsFilter) {
+            filteredGroups = result.groups.filter(group => {
+                const keywords = group.group_params.keywords;
+                if (Array.isArray(keywords)) {
+                    return keywords.some(keyword =>
+                        keyword.toLowerCase().includes(keywordsFilter.toLowerCase())
+                    );
+                }
+                return false;
+            });
+
+            // Recalculer la pagination pour les résultats filtrés
+            const totalFiltered = filteredGroups.length;
+            result.pagination.total_items = totalFiltered;
+            result.pagination.total_pages = Math.ceil(totalFiltered / limit);
+            result.pagination.has_next_page = page < result.pagination.total_pages;
+        }
+
+        res.json({
+            success: true,
+            groups: filteredGroups,
+            pagination: result.pagination
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error instanceof Error ? error.message : error
+        });
+    }
+};
+
+/**
+ * @swagger
+ * /api/keyword-explorer/keywords-for-keywords/groups/{groupId}:
+ *   get:
+ *     summary: Get a specific keywords for keywords task group
+ *     description: |
+ *       Retrieves detailed information about a specific group of keywords for keywords tasks.
+ *       Includes all tasks and their complete results for the specified group ID.
+ *       Only includes tasks where isSearchVolumn is false or null.
+ *     tags:
+ *       - Keyword Explorer
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Group identifier (format: keywords_locationCode_languageCode_timeWindow)
+ *         example: "keyword research|SEO tools_2840_en_12345678"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved group details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/KeywordsForKeywordsGroupByIdResponse'
+ *       401:
+ *         description: Authentication required
+ *       404:
+ *         description: Group not found
+ *       500:
+ *         description: Internal server error
+ */
+export const getKeywordsForKeywordsGroupById = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+        const { groupId } = req.params;
+        const group = await KeywordsForKeywordsRepository.getTaskGroupById(userId, groupId);
+
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                message: 'Group not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            group: group
+        });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Invalid group ID format') {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid group ID format'
+            });
+        }
+        res.status(500).json({
+            success: false,
+            error: error instanceof Error ? error.message : error
+        });
+    }
+};
+
+/**
+ * @swagger
+ * /api/keyword-explorer/keywords-for-keywords/groups/{groupId}:
+ *   delete:
+ *     summary: Delete a keywords for keywords task group
+ *     description: |
+ *       Deletes all tasks belonging to a specific group. This action cannot be undone.
+ *       All tasks with the same base query parameters created within the same time window
+ *       will be permanently removed from the database.
+ *       Only affects tasks where isSearchVolumn is false or null.
+ *     tags:
+ *       - Keyword Explorer
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Group identifier to delete
+ *         example: "keyword research|SEO tools_2840_en_12345678"
+ *     responses:
+ *       200:
+ *         description: Group successfully deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/KeywordsForKeywordsGroupDeleteResponse'
+ *             examples:
+ *               successful_deletion:
+ *                 summary: Successful group deletion
+ *                 value:
+ *                   success: true
+ *                   message: "Group deleted successfully"
+ *                   deleted_count: 3
+ *       401:
+ *         description: Authentication required
+ *       404:
+ *         description: Group not found or no tasks to delete
+ *       500:
+ *         description: Internal server error
+ */
+export const deleteKeywordsForKeywordsGroup = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+        const { groupId } = req.params;
+        const deletedCount = await KeywordsForKeywordsRepository.deleteTaskGroup(userId, groupId);
+
+        if (deletedCount === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Group not found or already deleted'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Group deleted successfully',
+            deleted_count: deletedCount
+        });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Invalid group ID format') {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid group ID format'
+            });
+        }
+        res.status(500).json({
+            success: false,
+            error: error instanceof Error ? error.message : error
+        });
+    }
+};
+

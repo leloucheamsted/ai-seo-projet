@@ -4,6 +4,7 @@ export const DomainRankOverviewRepository = {
     async saveDomainRankOverviewTask(task: any, params?: object) {
         return DomainRankOverviewTask.create({
             id: task.id,
+            user_id: task.user_id,
             status_code: task.status_code,
             status_message: task.status_message,
             time: task.time,

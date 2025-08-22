@@ -1,10 +1,49 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { RouteObject } from 'react-router-dom';
+import { Spin } from 'antd';
 import { LoginPage, RegisterPage } from '../../modules/auth';
 import DashboardLayout from '../../shared/layouts/DashboardLayout';
-import { KeywordExplorerPage } from '../../modules/keyword-explorer/pages/KeywordExplorerPage';
-import { UrlAnalyzerPage } from '../../modules/url-analyzer/pages/UrlAnalyzerPage';
-import { RankMonitorPage } from '../../modules/rank-monitor/pages/RankMonitorPage';
+import { ModuleManager } from '../../config/microfrontend.config';
+
+// Lazy loading des modules avec Suspense
+const KeywordExplorerPage = lazy(() =>
+    import('../../modules/keyword-explorer/pages/KeywordExplorerPage').then(module => ({
+        default: module.KeywordExplorerPage
+    }))
+);
+
+const UrlAnalyzerPage = lazy(() =>
+    import('../../modules/url-analyzer/pages/UrlAnalyzerPage').then(module => ({
+        default: module.UrlAnalyzerPage
+    }))
+);
+
+const RankMonitorPage = lazy(() =>
+    import('../../modules/rank-monitor/pages/RankMonitorPage').then(module => ({
+        default: module.RankMonitorPage
+    }))
+);
+
+// Composant de chargement pour les modules
+const ModuleLoadingSpinner = ({ moduleName }: { moduleName: string }) => (
+    <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '50vh'
+    }}>
+        <Spin size="large" tip={`Chargement du module ${moduleName}...`} />
+    </div>
+);
+
+// Wrapper pour Suspense avec fallback personnalisé
+const withSuspense = (Component: React.LazyExoticComponent<any>, moduleName: string) => {
+    return (props: any) => (
+        <Suspense fallback={<ModuleLoadingSpinner moduleName={moduleName} />}>
+            <Component {...props} />
+        </Suspense>
+    );
+};
 
 const routes: RouteObject[] = [
     {
@@ -19,9 +58,28 @@ const routes: RouteObject[] = [
         path: '/',
         element: <DashboardLayout />,
         children: [
-            { path: 'keyword-explorer', element: <KeywordExplorerPage /> },
-            { path: 'url-analyzer', element: <UrlAnalyzerPage /> },
-            { path: 'rank-monitor', element: <RankMonitorPage /> },
+            // Routes conditionnelles basées sur les feature flags
+            ...(ModuleManager.isModuleEnabled('keywordExplorer')
+                ? [{
+                    path: 'keyword-explorer',
+                    element: withSuspense(KeywordExplorerPage, 'Keyword Explorer')({})
+                }]
+                : []
+            ),
+            ...(ModuleManager.isModuleEnabled('urlAnalyzer')
+                ? [{
+                    path: 'url-analyzer',
+                    element: withSuspense(UrlAnalyzerPage, 'URL Analyzer')({})
+                }]
+                : []
+            ),
+            ...(ModuleManager.isModuleEnabled('rankMonitor')
+                ? [{
+                    path: 'rank-monitor',
+                    element: withSuspense(RankMonitorPage, 'Rank Monitor')({})
+                }]
+                : []
+            ),
         ],
     },
 ];

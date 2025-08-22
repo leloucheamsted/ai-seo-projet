@@ -4,6 +4,12 @@ export const DataForSEOCredentialsRepository = {
     async getByUserId(userId: number) {
         return DataForSEOCredentials.findOne({ where: { userId } });
     },
+
+    async hasCredentials(userId: number): Promise<boolean> {
+        const credentials = await this.getByUserId(userId);
+        return !!credentials;
+    },
+
     async upsertByUserId(userId: number, login: string, password: string) {
         const existing = await DataForSEOCredentials.findOne({ where: { userId } });
         if (existing) {

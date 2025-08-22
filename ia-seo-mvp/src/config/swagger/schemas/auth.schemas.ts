@@ -33,6 +33,16 @@ export const authSchemas = {
                 format: 'date-time',
                 description: 'User last update timestamp',
             },
+            hasDataForSEOCredentials: {
+                type: 'boolean',
+                description: 'Indicates if the user has DataForSEO credentials configured',
+                example: true,
+            },
+            isSubscribed: {
+                type: 'boolean',
+                description: 'Indicates if the user has an active subscription',
+                example: true,
+            },
         },
     },
     AuthTokens: {

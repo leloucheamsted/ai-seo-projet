@@ -1,9 +1,10 @@
-import React from 'react';
-import { Form, Input, Card, Row, Col, message } from 'antd';
+import React, { useEffect } from 'react';
+import { Form, Input, Card, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import LoadingButton from '../../../shared/components/LoadingButton';
-import { useLoadingState } from '../../../shared/hooks/useLoadingState';
+import { useAuth } from '../hooks/useAuth';
+import { authService } from '../services/authService';
 
 interface LoginFormData {
     email: string;
@@ -12,38 +13,39 @@ interface LoginFormData {
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
-    const loginButton = useLoadingState();
+    const location = useLocation();
+    const { login, isLoading } = useAuth();
 
-    // Simulation d'une API de connexion
-    const mockLogin = (email: string, password: string): Promise<{ token: string; user: any }> => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (email === 'admin@example.com' && password === 'password') {
-                    resolve({
-                        token: 'mock-jwt-token',
-                        user: { id: 1, email, name: 'Admin User' }
-                    });
-                } else {
-                    reject(new Error('Email ou mot de passe incorrect'));
-                }
-            }, 2000); // Simulation de 2 secondes de latence
-        });
-    };
+    // Sauvegarder la page de redirection si elle est passée dans l'état de navigation
+    useEffect(() => {
+        const from = location.state?.from?.pathname;
+        if (from && from !== '/login') {
+            authService.setRedirectPath(from + (location.state?.from?.search || ''));
+        }
+    }, [location]);
 
+    // Fonction de connexion utilisant le hook useAuth
     const handleLogin = async (values: LoginFormData) => {
         try {
-            const { token, user } = await loginButton.executeWithLoading(() =>
-                mockLogin(values.email, values.password)
-            );
+            const success = await login({
+                email: values.email,
+                password: values.password,
+            });
 
-            // Stocker le token et les données utilisateur
-            localStorage.setItem('authToken', token);
-            localStorage.setItem('user', JSON.stringify(user));
+            if (success) {
+                // Vérifier s'il y a une page de redirection sauvegardée
+                const redirectPath = authService.getAndClearRedirectPath();
 
-            message.success('Connexion réussie !');
-            navigate('/'); // Redirection vers le dashboard
+                if (redirectPath) {
+                    console.log('🔄 Redirection vers:', redirectPath);
+                    navigate(redirectPath, { replace: true });
+                } else {
+                    console.log('🏠 Redirection vers dashboard');
+                    navigate('/', { replace: true });
+                }
+            }
         } catch (error) {
-            message.error(error instanceof Error ? error.message : 'Erreur de connexion');
+            console.error('Erreur lors de la connexion:', error);
         }
     };
 
@@ -112,7 +114,7 @@ const LoginPage: React.FC = () => {
                                     htmlType="submit"
                                     size="large"
                                     className="w-full bg-primary border-primary hover:bg-primary/80 rounded-lg h-12"
-                                    isLoading={loginButton.isLoading}
+                                    isLoading={isLoading}
                                     loadingText="Connexion en cours..."
                                 >
                                     Se connecter

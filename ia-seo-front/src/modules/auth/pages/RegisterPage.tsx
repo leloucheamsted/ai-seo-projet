@@ -1,9 +1,9 @@
 import React from 'react';
-import { Form, Input, Card, Row, Col, message, Checkbox } from 'antd';
+import { Form, Input, Card, Row, Col, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, UserAddOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import LoadingButton from '../../../shared/components/LoadingButton';
-import { useLoadingState } from '../../../shared/hooks/useLoadingState';
+import { useAuth } from '../hooks/useAuth';
 
 interface RegisterFormData {
     firstName: string;
@@ -17,49 +17,27 @@ interface RegisterFormData {
 
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate();
-    const registerButton = useLoadingState();
+    const { register, isLoading } = useAuth();
     const [form] = Form.useForm();
 
     // Simulation d'une API d'inscription
-    const mockRegister = (userData: Omit<RegisterFormData, 'confirmPassword' | 'agreeToTerms'>): Promise<{ token: string; user: any }> => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulation de validation côté serveur
-                if (userData.email === 'existing@example.com') {
-                    reject(new Error('Cette adresse email est déjà utilisée'));
-                    return;
-                }
-
-                resolve({
-                    token: 'mock-jwt-token',
-                    user: {
-                        id: Math.random(),
-                        email: userData.email,
-                        firstName: userData.firstName,
-                        lastName: userData.lastName,
-                        phone: userData.phone
-                    }
-                });
-            }, 2500); // Simulation de 2.5 secondes de latence
-        });
-    };
-
     const handleRegister = async (values: RegisterFormData) => {
         try {
-            const { confirmPassword, agreeToTerms, ...userData } = values;
+            const { confirmPassword, agreeToTerms, phone, ...userData } = values;
 
-            const { token, user } = await registerButton.executeWithLoading(() =>
-                mockRegister(userData)
-            );
+            const success = await register({
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                email: userData.email,
+                password: userData.password,
+                passwordConfirmation: confirmPassword,
+            });
 
-            // Stocker le token et les données utilisateur
-            localStorage.setItem('authToken', token);
-            localStorage.setItem('user', JSON.stringify(user));
-
-            message.success('Inscription réussie ! Bienvenue !');
-            navigate('/'); // Redirection vers le dashboard
+            if (success) {
+                navigate('/'); // Redirection vers le dashboard
+            }
         } catch (error) {
-            message.error(error instanceof Error ? error.message : 'Erreur lors de l\'inscription');
+            console.error('Erreur lors de l\'inscription:', error);
         }
     };
 
@@ -242,7 +220,7 @@ const RegisterPage: React.FC = () => {
                                     htmlType="submit"
                                     size="large"
                                     className="w-full bg-primary border-primary hover:bg-primary/80 rounded-lg h-12"
-                                    isLoading={registerButton.isLoading}
+                                    isLoading={isLoading}
                                     loadingText="Création du compte..."
                                 >
                                     Créer mon compte

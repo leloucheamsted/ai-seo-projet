@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/user.model';
+import { DataForSEOCredentialsService } from '../services/dataforseoCredentials.service';
 import { JwtConfig } from '../config/jwt.config';
 import { logger } from '../utils/logger';
 import { catchAsync } from '../middlewares/error.middleware';
@@ -345,6 +346,8 @@ router.post('/refresh', catchAsync(async (req: Request, res: Response): Promise<
  *   get:
  *     summary: Get current user profile
  *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: User profile retrieved successfully
@@ -357,7 +360,34 @@ router.post('/refresh', catchAsync(async (req: Request, res: Response): Promise<
  *                   type: boolean
  *                   example: true
  *                 user:
- *                   $ref: '#/components/schemas/User'
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     email:
+ *                       type: string
+ *                       example: "user@example.com"
+ *                     firstName:
+ *                       type: string
+ *                       example: "John"
+ *                     lastName:
+ *                       type: string
+ *                       example: "Doe"
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
+ *                     hasDataForSEOCredentials:
+ *                       type: boolean
+ *                       description: "Indicates if the user has DataForSEO credentials configured"
+ *                       example: true
+ *                     isSubscribed:
+ *                       type: boolean
+ *                       description: "Indicates if the user has an active subscription"
+ *                       example: true
  *       401:
  *         description: Unauthorized
  *         content:
@@ -390,13 +420,23 @@ router.get('/me', catchAsync(async (req: Request, res: Response): Promise<void> 
             return;
         }
 
+        // Vérifier si l'utilisateur a des credentials DataForSEO
+        const hasDataForSEOCredentials = await DataForSEOCredentialsService.hasCredentials(user.id);
+
+        // Pour le moment, tous les utilisateurs sont considérés comme abonnés
+        const isSubscribed = true;
+
         res.status(200).json({
             success: true,
             user: {
                 id: user.id,
                 email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 created_at: user.created_at,
                 updated_at: user.updated_at,
+                hasDataForSEOCredentials,
+                isSubscribed,
             },
         });
     } catch (error) {

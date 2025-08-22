@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { RouteObject } from 'react-router-dom';
 import { Spin } from 'antd';
 import { LoginPage, RegisterPage } from '../../modules/auth';
+import { AuthGuard, PublicRoute } from '../../modules/auth/components/AuthGuard';
 import DashboardLayout from '../../shared/layouts/DashboardLayout';
 import { ModuleManager } from '../../config/microfrontend.config';
 
@@ -53,17 +54,31 @@ const withSuspense = (Component: React.LazyExoticComponent<any>, moduleName: str
 };
 
 const routes: RouteObject[] = [
+    // Routes publiques (protégées contre l'accès si déjà connecté)
     {
         path: '/login',
-        element: <LoginPage />,
+        element: (
+            <PublicRoute>
+                <LoginPage />
+            </PublicRoute>
+        ),
     },
     {
         path: '/register',
-        element: <RegisterPage />,
+        element: (
+            <PublicRoute>
+                <RegisterPage />
+            </PublicRoute>
+        ),
     },
+    // Routes protégées (nécessitent un token d'authentification)
     {
         path: '/',
-        element: <DashboardLayout />,
+        element: (
+            <AuthGuard>
+                <DashboardLayout />
+            </AuthGuard>
+        ),
         children: [
             // Route par défaut pour le dashboard
             {
@@ -104,6 +119,26 @@ const routes: RouteObject[] = [
             ),
         ],
     },
+    // Route catch-all pour les pages non trouvées (redirige vers login si pas de token)
+    {
+        path: '*',
+        element: (
+            <AuthGuard fallback="/login">
+                <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                    <div className="text-center">
+                        <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
+                        <p className="text-gray-600 mb-8">Page non trouvée</p>
+                        <a
+                            href="/"
+                            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                            Retour au dashboard
+                        </a>
+                    </div>
+                </div>
+            </AuthGuard>
+        )
+    }
 ];
 
 export default routes;

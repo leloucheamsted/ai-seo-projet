@@ -70,18 +70,24 @@ const DashboardLayout: React.FC = () => {
             className: 'font-medium text-darkText/60'
         },
         // Exemples de développement
-        {
-            key: '/loading-examples',
-            icon: <div className="w-2 h-2 rounded-full bg-primaryDark"></div>,
-            label: 'Loading Examples',
-            className: 'font-medium text-primaryDark'
-        },
-        {
-            key: '/loading-hooks',
-            icon: <div className="w-2 h-2 rounded-full bg-primaryDark"></div>,
-            label: 'Loading Hooks',
-            className: 'font-medium text-primaryDark'
-        },
+        // {
+        //     key: '/loading-examples',
+        //     icon: <div className="w-2 h-2 rounded-full bg-primaryDark"></div>,
+        //     label: 'Loading Examples',
+        //     className: 'font-medium text-primaryDark'
+        // },
+        // {
+        //     key: '/loading-hooks',
+        //     icon: <div className="w-2 h-2 rounded-full bg-primaryDark"></div>,
+        //     label: 'Loading Hooks',
+        //     className: 'font-medium text-primaryDark'
+        // },
+        // {
+        //     key: '/test-logger',
+        //     icon: <div className="w-2 h-2 rounded-full bg-red-500"></div>,
+        //     label: 'Test Logger & Notifications',
+        //     className: 'font-medium text-red-600'
+        // },
     ];
 
     const userMenuItems = [

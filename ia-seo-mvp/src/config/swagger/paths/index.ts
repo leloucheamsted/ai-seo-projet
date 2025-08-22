@@ -3,6 +3,7 @@ export * from './auth.paths';
 export * from './dashboard.paths';
 export * from './taskCosts.paths';
 export * from './settings.paths';
+export * from './dataforseo.paths';
 export * from './system.paths';
 export * from './keywordExplorer.paths';
 export * from './urlAnalyzer.paths';

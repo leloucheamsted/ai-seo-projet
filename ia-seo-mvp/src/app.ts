@@ -13,12 +13,13 @@ import { rateLimitMiddleware } from './middlewares/rateLimit.middleware';
 
 // Import controllers
 // Les autres contrôleurs seront ajoutés au fur et à mesure
+import authController from './api/auth.controller';
+import dataForSEOController from './api/dataforseo.controller';
 
 // Import utils
 import { logger } from './utils/logger';
 import { ApiConfig } from './config/api.config';
 import { swaggerSpec, swaggerOptions } from './config/swagger';
-import authController from './api/auth.controller';
 
 // Load environment variables
 dotenv.config();
@@ -192,6 +193,9 @@ class App {
 
         // Authentication routes (public)
         this.app.use('/api/auth', authController);
+
+        // DataForSEO credentials routes (secured)
+        this.app.use('/api/dataforseo', dataForSEOController);
 
         // Dashboard routes (secured)
         this.app.use('/api/dashboard', require('./api/dashboard.routes').default);

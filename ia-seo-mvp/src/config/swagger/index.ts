@@ -5,7 +5,7 @@ import { SwaggerDefinition } from 'swagger-jsdoc';
 import { commonSchemas, commonParameters, commonResponses, authSchemas, dashboardSchemas, taskCostSchemas, settingsSchemas, keywordExplorerSchemas, urlAnalyzerSchemas, rankMonitorSchemas } from './schemas';
 
 // Import paths  
-import { authPaths, dashboardPaths, taskCostsPaths, settingsPaths, systemPaths, keywordExplorerPaths, urlAnalyzerPaths, rankMonitorPaths } from './paths';
+import { authPaths, dashboardPaths, taskCostsPaths, settingsPaths, dataForSEOPaths, systemPaths, keywordExplorerPaths, urlAnalyzerPaths, rankMonitorPaths } from './paths';
 
 
 const swaggerDefinition: SwaggerDefinition = {
@@ -66,6 +66,7 @@ const swaggerDefinition: SwaggerDefinition = {
         ...dashboardPaths,
         ...taskCostsPaths,
         ...settingsPaths,
+        ...dataForSEOPaths,
         ...systemPaths,
         ...keywordExplorerPaths,
         ...urlAnalyzerPaths,
@@ -99,6 +100,10 @@ const swaggerDefinition: SwaggerDefinition = {
         {
             name: 'Settings',
             description: 'User settings and configuration endpoints',
+        },
+        {
+            name: 'DataForSEO',
+            description: 'DataForSEO credentials management endpoints',
         },
         {
             name: 'System',
@@ -137,7 +142,8 @@ export const swaggerOptions = {
     .swagger-ui .tag-operations[data-tag="URL Analyzer"] { order: 5; }
     .swagger-ui .tag-operations[data-tag="Rank Monitor"] { order: 6; }
     .swagger-ui .tag-operations[data-tag="Settings"] { order: 7; }
-    .swagger-ui .tag-operations[data-tag="System"] { order: 8; }
+    .swagger-ui .tag-operations[data-tag="DataForSEO"] { order: 8; }
+    .swagger-ui .tag-operations[data-tag="System"] { order: 9; }
   `,
     customSiteTitle: 'IA SEO MVP API Documentation',
     customfavIcon: '/favicon.ico',

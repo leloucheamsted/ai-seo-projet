@@ -194,7 +194,49 @@ export const authPaths = {
                             schema: {
                                 type: 'object',
                                 properties: {
-                                    user: { $ref: '#/components/schemas/User' }
+                                    success: {
+                                        type: 'boolean',
+                                        example: true
+                                    },
+                                    user: {
+                                        type: 'object',
+                                        properties: {
+                                            id: {
+                                                type: 'integer',
+                                                example: 1
+                                            },
+                                            email: {
+                                                type: 'string',
+                                                example: 'user@example.com'
+                                            },
+                                            firstName: {
+                                                type: 'string',
+                                                example: 'John'
+                                            },
+                                            lastName: {
+                                                type: 'string',
+                                                example: 'Doe'
+                                            },
+                                            created_at: {
+                                                type: 'string',
+                                                format: 'date-time'
+                                            },
+                                            updated_at: {
+                                                type: 'string',
+                                                format: 'date-time'
+                                            },
+                                            hasDataForSEOCredentials: {
+                                                type: 'boolean',
+                                                description: 'Indicates if the user has DataForSEO credentials configured',
+                                                example: true
+                                            },
+                                            isSubscribed: {
+                                                type: 'boolean',
+                                                description: 'Indicates if the user has an active subscription',
+                                                example: true
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

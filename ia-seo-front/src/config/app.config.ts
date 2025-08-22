@@ -74,7 +74,7 @@ export interface AppConfig {
  */
 export const config: AppConfig = {
     api: {
-        baseUrl: process.env.NODE_APP_API_BASE_URL || 'http://localhost:3000',
+        baseUrl: process.env.NODE_APP_API_BASE_URL || 'http://localhost:5100',
         endpoints: {
             auth: process.env.NODE_APP_API_AUTH_ENDPOINT || '/api/auth',
             dashboard: process.env.NODE_APP_API_DASHBOARD_ENDPOINT || '/api/dashboard',

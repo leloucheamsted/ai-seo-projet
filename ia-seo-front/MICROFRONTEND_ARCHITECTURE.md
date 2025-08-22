@@ -35,9 +35,19 @@ src/
 │   ├── app.config.ts       # Configuration principale
 │   └── microfrontend.config.ts # Configuration modules MF
 │
-└── app/                     # Configuration de l'application
+|__ assets 
+|
+|__ pages
+|
+|__ services
+|
+|
+└── app/                     # Configuration de   l'application
     ├── routes/             # Routage avec lazy loading
     └── providers/         # Providers globaux
+    |__ routes/           # routes
+    |__ stores/           # stores
+    |__ hooks/       # hooks
 ```
 
 ## ⚙️ **Configuration des Modules**

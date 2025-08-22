@@ -3,6 +3,8 @@ import { sequelize } from '../config/db.config';
 
 export interface UserAttributes {
     id: number;
+    firstName: string;
+    lastName: string;
     email: string;
     password_hash: string;
     created_at?: Date;
@@ -13,6 +15,8 @@ export interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
+    public firstName!: string;
+    public lastName!: string;
     public email!: string;
     public password_hash!: string;
     public readonly created_at!: Date;
@@ -32,6 +36,22 @@ User.init(
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        firstName: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                len: [2, 100],
+            },
+        },
+        lastName: {
+            type: DataTypes.STRING(100),
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                len: [2, 100],
+            },
         },
         email: {
             type: DataTypes.STRING(255),

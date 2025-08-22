@@ -51,21 +51,58 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 router.post('/register', catchAsync(async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body;
+    const { email, password, passwordConfirmation, firstName, lastName } = req.body;
 
     // Basic validation
-    if (!email || !password) {
+    if (!email || !password || !passwordConfirmation || !firstName || !lastName) {
         res.status(400).json({
             error: 'Validation error',
-            message: 'Email and password are required',
+            message: 'Email, password, password confirmation, first name, and last name are required',
         });
         return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        res.status(400).json({
+            error: 'Validation error',
+            message: 'Please provide a valid email address',
+        });
+        return;
+    }
+
+    // Password validation
     if (password.length < 6) {
         res.status(400).json({
             error: 'Validation error',
             message: 'Password must be at least 6 characters long',
+        });
+        return;
+    }
+
+    // Password confirmation validation
+    if (password !== passwordConfirmation) {
+        res.status(400).json({
+            error: 'Validation error',
+            message: 'Password and password confirmation do not match',
+        });
+        return;
+    }
+
+    // Name validation
+    if (firstName.length < 2 || firstName.length > 100) {
+        res.status(400).json({
+            error: 'Validation error',
+            message: 'First name must be between 2 and 100 characters long',
+        });
+        return;
+    }
+
+    if (lastName.length < 2 || lastName.length > 100) {
+        res.status(400).json({
+            error: 'Validation error',
+            message: 'Last name must be between 2 and 100 characters long',
         });
         return;
     }
@@ -88,6 +125,8 @@ router.post('/register', catchAsync(async (req: Request, res: Response): Promise
     const user = await User.create({
         email,
         password_hash,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
     });
 
     // Generate tokens
@@ -96,7 +135,7 @@ router.post('/register', catchAsync(async (req: Request, res: Response): Promise
         email: user.email,
     });
 
-    logger.info('User registered', { userId: user.id, email: user.email });
+    logger.info('User registered', { userId: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName });
 
     res.status(201).json({
         success: true,
@@ -104,6 +143,8 @@ router.post('/register', catchAsync(async (req: Request, res: Response): Promise
         user: {
             id: user.id,
             email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
             created_at: user.created_at,
         },
         tokens: tokenPair,

@@ -83,7 +83,9 @@ import {
 ```typescript
 const user = await User.create({
   email: 'user@example.com',
-  password_hash: 'hashed_password'
+  password_hash: 'hashed_password',
+  firstName: 'John',
+  lastName: 'Doe'
 });
 ```
 

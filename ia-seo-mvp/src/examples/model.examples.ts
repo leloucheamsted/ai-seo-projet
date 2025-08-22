@@ -21,10 +21,12 @@ export class ModelExamples {
     /**
      * Create a new user
      */
-    static async createUser(email: string, passwordHash: string): Promise<User> {
+    static async createUser(email: string, passwordHash: string, firstName: string = 'John', lastName: string = 'Doe'): Promise<User> {
         return await User.create({
             email,
             password_hash: passwordHash,
+            firstName,
+            lastName,
         });
     }
 

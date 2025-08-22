@@ -13,6 +13,16 @@ export const authSchemas = {
                 description: 'User email address',
                 example: 'user@example.com',
             },
+            firstName: {
+                type: 'string',
+                description: 'User first name',
+                example: 'John',
+            },
+            lastName: {
+                type: 'string',
+                description: 'User last name',
+                example: 'Doe',
+            },
             created_at: {
                 type: 'string',
                 format: 'date-time',
@@ -60,7 +70,7 @@ export const authSchemas = {
     },
     RegisterRequest: {
         type: 'object',
-        required: ['email', 'password'],
+        required: ['email', 'password', 'passwordConfirmation', 'firstName', 'lastName'],
         properties: {
             email: {
                 type: 'string',
@@ -73,6 +83,26 @@ export const authSchemas = {
                 minLength: 6,
                 description: 'User password (minimum 6 characters)',
                 example: 'password123',
+            },
+            passwordConfirmation: {
+                type: 'string',
+                minLength: 6,
+                description: 'Password confirmation (must match password)',
+                example: 'password123',
+            },
+            firstName: {
+                type: 'string',
+                minLength: 2,
+                maxLength: 100,
+                description: 'User first name (2-100 characters)',
+                example: 'John',
+            },
+            lastName: {
+                type: 'string',
+                minLength: 2,
+                maxLength: 100,
+                description: 'User last name (2-100 characters)',
+                example: 'Doe',
             },
         },
     },

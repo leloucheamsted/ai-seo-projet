@@ -1,0 +1,50 @@
+/* Styles pour la modal de déconnexion */
+.logout-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.logout-modal .ant-modal-body {
+  padding: 0;
+}
+
+.logout-modal .ant-alert {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation pour l'icône d'alerte */
+.logout-modal .anticon-exclamation-circle {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Amélioration des boutons dans la modal */
+.logout-modal .ant-btn {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.logout-modal .ant-btn-primary.ant-btn-dangerous {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-color: #ef4444;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.logout-modal .ant-btn-primary.ant-btn-dangerous:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  border-color: #dc2626;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+  transform: translateY(-1px);
+}

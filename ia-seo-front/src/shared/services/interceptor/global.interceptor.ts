@@ -1,11 +1,11 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { logger } from '../logger';
 
 export const globalInterceptor = (instance: typeof axios) => {
     // Réponse
     instance.interceptors.response.use(
         (response) => response,
-        (error: AxiosError) => {
+        (error: any) => {
             // Log l'erreur
             logger.error('API Error', {
                 context: 'Axios',

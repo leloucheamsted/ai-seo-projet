@@ -5,6 +5,13 @@ import { LoginPage, RegisterPage } from '../../modules/auth';
 import DashboardLayout from '../../shared/layouts/DashboardLayout';
 import { ModuleManager } from '../../config/microfrontend.config';
 
+// Lazy loading de la page Dashboard
+const DashboardPage = lazy(() => import('../../pages/DashboardPage'));
+
+// Pages d'exemples (pour développement)
+const LoadingButtonExamples = lazy(() => import('../../pages/LoadingButtonExamples'));
+const LoadingButtonWithHooks = lazy(() => import('../../pages/LoadingButtonWithHooks'));
+
 // Lazy loading des modules avec Suspense
 const KeywordExplorerPage = lazy(() =>
     import('../../modules/keyword-explorer/pages/KeywordExplorerPage').then(module => ({
@@ -58,6 +65,21 @@ const routes: RouteObject[] = [
         path: '/',
         element: <DashboardLayout />,
         children: [
+            // Route par défaut pour le dashboard
+            {
+                index: true,
+                element: withSuspense(DashboardPage, 'Dashboard')({})
+            },
+            // Pages d'exemples (développement)
+            {
+                path: 'loading-examples',
+                element: withSuspense(LoadingButtonExamples, 'Loading Examples')({})
+            },
+            {
+                path: 'loading-hooks',
+                element: withSuspense(LoadingButtonWithHooks, 'Loading Hooks')({})
+            },
+
             // Routes conditionnelles basées sur les feature flags
             ...(ModuleManager.isModuleEnabled('keywordExplorer')
                 ? [{

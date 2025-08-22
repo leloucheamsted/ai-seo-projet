@@ -18,7 +18,7 @@ const App: React.FC = () => {
           colorError: '#EF4444',
           fontFamily: 'Ubuntu, sans-serif',
           colorBgContainer: '#FFFFFF',
-          colorBgLayout: '#e1decf',
+          colorBgLayout: '#fff',
           colorText: '#000000',
           colorTextSecondary: '#6B7280',
           colorBorder: '#E5E7EB',
